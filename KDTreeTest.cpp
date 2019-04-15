@@ -1,8 +1,9 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+
 #include "catch.hpp"
 #include "KDTree.h"
 
-SCENARIO("Items can be inserted", "[insert]" ) {
+SCENARIO("Items can be inserted", "[insert]") {
 
     GIVEN("An empty KDTree") {
         IKDTree *kdtree = new KDTree();
@@ -52,10 +53,48 @@ SCENARIO("Items can be inserted", "[insert]" ) {
             kdtree->insert(Point(std::vector<double>({-5, 5})));
             std::list<Point> points = kdtree->getAllPoints();
 
-            THEN("There are 2 points in the returned list of getAllPoints") {
+            THEN("There are 7 points in the returned list of getAllPoints") {
 
                 REQUIRE(points.size() == 7);
 
+            }
+
+        }
+    }
+}
+
+SCENARIO("Items can be searched", "[search]") {
+
+    GIVEN("A KDTree with 5 points") {
+        IKDTree *kdtree = new KDTree();
+
+        kdtree->insert(Point(std::vector<double>({5, 5})));
+        kdtree->insert(Point(std::vector<double>({-5, -5})));
+        kdtree->insert(Point(std::vector<double>({-2, -2})));
+        kdtree->insert(Point(std::vector<double>({10, -10})));
+        kdtree->insert(Point(std::vector<double>({11, -8})));
+
+        WHEN("Searching for one nearby point") {
+
+            auto result = kdtree->search(Point(std::vector<double>({10, -9})), 1);
+
+            THEN("There is exactly one result") {
+                REQUIRE(result.size() == 1);
+            }
+
+            THEN("The result is the expected point") {
+                REQUIRE(result.front().getCoordinates().front() == 10);
+                REQUIRE(result.front().getCoordinates().back() == -10);
+            }
+
+        }
+
+        WHEN("Searching for two nearby points") {
+
+            auto result = kdtree->search(Point(std::vector<double>({10, -9})), 2);
+
+            THEN("There are exactly two results") {
+                REQUIRE(result.size() == 2);
             }
 
         }
