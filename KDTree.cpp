@@ -68,18 +68,18 @@ std::list<Point> KDTree::search(const Point &target, int amount) {
 std::list<Point> KDTree::getAllPoints() {
     std::list<Point> points = std::list<Point>();
 
-    get_rec(root, points);
+    getRec(root, points);
 
     return points;
 }
 
-void KDTree::get_rec(std::shared_ptr<KDTree::Node> current, std::list<Point> &point_list) {
+void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<Point> &point_list) {
     if (current == nullptr) {
         return;
     }
 
     point_list.push_back(current->getPoint());
 
-    get_rec(current->getLeft(), point_list);
-    get_rec(current->getRight(), point_list);
+    getRec(current->getLeft(), point_list);
+    getRec(current->getRight(), point_list);
 }

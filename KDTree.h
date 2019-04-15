@@ -65,7 +65,9 @@ private:
 
     };
 
-    void get_rec(std::shared_ptr<Node> current, std::list<Point> &point_list);
+    void getRec(std::shared_ptr<Node> current, std::list<Point> &point_list);
+
+    void searchRec(std::list<Point> &foundList, const Point &target, int amount);
 
     std::shared_ptr<Node> root;
 
