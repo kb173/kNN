@@ -9,6 +9,10 @@ public:
     ClassifiedPoint(std::vector<double> coordinates, int classification) : Point(std::move(coordinates)),
                                                                            classification(classification) {}
 
+    int getClassification() const {
+        return classification;
+    }
+
 protected:
     int classification;
 
