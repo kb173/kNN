@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <memory>
 
 class Point {
 
@@ -24,7 +25,7 @@ protected:
 class IPointDistance {
 
 public:
-    virtual double getDistance(const Point &point1, const Point &point2) = 0;
+    virtual double getDistance(std::shared_ptr<Point> point1, std::shared_ptr<Point> point2) = 0;
 
 };
 
@@ -32,7 +33,7 @@ public:
 class EuklidianPointDistance : public IPointDistance {
 
 public:
-    double getDistance(const Point &point1, const Point &point2) override;
+    double getDistance(std::shared_ptr<Point> point1, std::shared_ptr<Point> point2) override;
 
 };
 
