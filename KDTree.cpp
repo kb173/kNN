@@ -2,7 +2,7 @@
 
 #include "KDTree.h"
 
-const Point &KDTree::Node::getPoint() const {
+std::shared_ptr<Point> KDTree::Node::getPoint() const {
     return point;
 }
 
@@ -26,7 +26,7 @@ void KDTree::Node::setRight(std::shared_ptr<KDTree::Node> right) {
     Node::right = std::move(right);
 }
 
-void KDTree::insert(const Point &point) {
+void KDTree::insert(std::shared_ptr<Point> point) {
     std::shared_ptr<Node> new_node = std::make_shared<Node>(Node(point, 0)); // TODO: Fix splitting dim
 
     if (root == nullptr) {
@@ -38,8 +38,9 @@ void KDTree::insert(const Point &point) {
     int current_dimension = 0;
 
     while (true) {
-        if (new_node->getPoint().getCoordinates()[current_dimension] <
-            current->getPoint().getCoordinates()[current_dimension]) {
+        // Go right or left depending on the current dimension, then recurse of insert
+        if (new_node->getPoint()->getCoordinates()[current_dimension] <
+            current->getPoint()->getCoordinates()[current_dimension]) {
             if (current->getLeft() == nullptr) {
                 current->setLeft(new_node);
                 return;
@@ -56,24 +57,28 @@ void KDTree::insert(const Point &point) {
         }
 
         current_dimension++;
-        current_dimension = current_dimension % current->getPoint().getCoordinates().size();
+        current_dimension = current_dimension % current->getPoint()->getCoordinates().size();
 
     }
 }
 
-std::list<Point> KDTree::search(const Point &target, int amount) {
-    return std::list<Point>();
+std::list<std::shared_ptr<Point>> KDTree::search(std::shared_ptr<Point> target, int amount) {
+    auto results = std::list<std::shared_ptr<Point>>();
+
+    searchRec(root, results, target, amount);
+
+    return results;
 }
 
-std::list<Point> KDTree::getAllPoints() {
-    std::list<Point> points = std::list<Point>();
+std::list<std::shared_ptr<Point>> KDTree::getAllPoints() {
+    auto points = std::list<std::shared_ptr<Point>>();
 
     getRec(root, points);
 
     return points;
 }
 
-void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<Point> &point_list) {
+void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &point_list) {
     if (current == nullptr) {
         return;
     }
@@ -82,4 +87,14 @@ void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<Point> &poi
 
     getRec(current->getLeft(), point_list);
     getRec(current->getRight(), point_list);
+}
+
+void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &foundList,
+                       std::shared_ptr<Point> target, int amount) {
+    if (current == nullptr) {
+        return;
+    }
+
+    searchRec(current->getLeft(), foundList, target, amount);
+    searchRec(current->getRight(), foundList, target, amount);
 }

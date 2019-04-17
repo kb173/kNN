@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <utility>
+
 #ifndef KNN_KDTREE_H
 #define KNN_KDTREE_H
 
@@ -10,16 +12,17 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include <queue>
 
 
 class IKDTree {
 
 public:
-    virtual void insert(const Point &point) = 0;
+    virtual void insert(std::shared_ptr<Point> point) = 0;
 
-    virtual std::list<Point> search(const Point &target, int amount) = 0;
+    virtual std::list<std::shared_ptr<Point>> search(std::shared_ptr<Point> target, int amount) = 0;
 
-    virtual std::list<Point> getAllPoints() = 0;
+    virtual std::list<std::shared_ptr<Point>> getAllPoints() = 0;
 
 };
 
@@ -31,21 +34,22 @@ public:
 
     virtual ~KDTree() = default;
 
-    void insert(const Point &point) override;
+    void insert(std::shared_ptr<Point> point) override;
 
-    std::list<Point> search(const Point &target, int amount);
+    std::list<std::shared_ptr<Point>> search(std::shared_ptr<Point> target, int amount);
 
-    std::list<Point> getAllPoints();
+    std::list<std::shared_ptr<Point>> getAllPoints();
 
 private:
     class Node {
 
     public:
-        Node(const Point& point, int splitting_dim) : point(point), splitting_dim(splitting_dim) {};
+        Node(std::shared_ptr<Point> point, int splitting_dim)
+                : point(std::move(point)), splitting_dim(splitting_dim) {};
 
         virtual ~Node() = default;
 
-        const Point &getPoint() const;
+        std::shared_ptr<Point> getPoint() const;
 
         int getSplittingDim() const;
 
@@ -58,16 +62,50 @@ private:
         void setRight(std::shared_ptr<Node> right);
 
     protected:
-        Point point;
+        std::shared_ptr<Point> point;
         int splitting_dim;
         std::shared_ptr<Node> left;
         std::shared_ptr<Node> right;
 
     };
 
-    void getRec(std::shared_ptr<Node> current, std::list<Point> &point_list);
+    class pointHeap {
+    private:
+        class pointHeapEntry {
+        public:
+            Point point;
+            double dist;
 
-    void searchRec(std::list<Point> &foundList, const Point &target, int amount);
+            pointHeapEntry(Point &p, double d) : point(p), dist(d) {};
+
+            ~pointHeapEntry() = default;
+        };
+
+        // Lambda expression for comparing in priority queue
+        struct compare {
+            bool operator()(const pointHeapEntry &p1, const pointHeapEntry &p2) {
+                return p1.dist < p2.dist;
+            }
+        };
+
+
+        std::priority_queue<pointHeapEntry, std::vector<pointHeapEntry>, compare> heap;
+        int amount;
+
+    public:
+        explicit pointHeap(int a) : amount(a) {};
+
+        bool add(double *p, double dist);
+
+        double getWorstDist();
+
+        std::list<Point> getPoints();
+    };
+
+    void getRec(std::shared_ptr<Node> current, std::list<std::shared_ptr<Point>> &point_list);
+
+    void searchRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &foundList,
+                   std::shared_ptr<Point> target, int amount);
 
     std::shared_ptr<Node> root;
 
