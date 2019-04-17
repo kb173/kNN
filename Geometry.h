@@ -37,56 +37,54 @@ public:
 
 };
 
-
-class Shape {
+class Rectangle {
 
 public:
-    explicit Shape(Point origin) : origin(std::move(origin)) {}
+    const std::shared_ptr<Point> &getStart() const;
 
-    virtual ~Shape() = default;
+    void setStart(const std::shared_ptr<Point> &start);
 
-    virtual bool intersects(const Shape &other) = 0;
+    const std::shared_ptr<Point> &getEnd() const;
 
-    virtual bool encases(const Shape &other) = 0;
+    void setEnd(const std::shared_ptr<Point> &end);
 
-protected:
-    Point origin;
+private:
+    std::shared_ptr<Point> start;
+
+    std::shared_ptr<Point> end;
 
 };
 
-
-class Rect : public Shape {
-
-public:
-    Rect(const Point &origin, Point end) : Shape(origin), end(std::move(end)) {}
-
-    virtual ~Rect() = default;
-
-    bool intersects(const Shape &other) override;
-
-    bool encases(const Shape &other) override;
-
-private:
-    Point end;
-
-};
-
-
-class Circ : public Shape {
+class Circle {
 
 public:
-    Circ(const Point &origin, double radius) : Shape(origin), radius(radius) {}
+    const std::shared_ptr<Point> &getOrigin() const;
 
-    virtual ~Circ() = default;
+    void setOrigin(const std::shared_ptr<Point> &origin);
 
-    bool intersects(const Shape &other) override;
+    double getRadius() const;
 
-    bool encases(const Shape &other) override;
+    void setRadius(double radius);
 
 private:
+    std::shared_ptr<Point> origin;
+
     double radius;
 
 };
 
+class RectangleCircleIntersection {
+
+public:
+    bool intersects(Rectangle rect, Circle circ);
+
+};
+
+class RectangleCircleEncasement {
+
+public:
+    bool encases(Rectangle rect, Circle circ);
+
+};
 
 #endif //KNN_GEOMETRY_H

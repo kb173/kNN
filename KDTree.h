@@ -32,7 +32,7 @@ public:
 class KDTree : public IKDTree {
 
 public:
-    KDTree() : bounding_rect(Rect(Point(std::vector<double>(0, 0)), Point(std::vector<double>(0, 0)))) {}
+    KDTree() : bounding_rect(Rectangle()) {}
 
     virtual ~KDTree() = default;
 
@@ -110,7 +110,7 @@ private:
 
     std::shared_ptr<Node> root;
 
-    Rect bounding_rect;
+    Rectangle bounding_rect;
 
 };
 

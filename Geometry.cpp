@@ -28,18 +28,42 @@ double EuklidianPointDistance::getDistance(std::shared_ptr<Point> point1, std::s
     return std::sqrt(squared_sum);
 }
 
-bool Rect::intersects(const Shape &other) {
+const std::shared_ptr<Point> &Rectangle::getStart() const {
+    return start;
+}
+
+void Rectangle::setStart(const std::shared_ptr<Point> &start) {
+    Rectangle::start = start;
+}
+
+const std::shared_ptr<Point> &Rectangle::getEnd() const {
+    return end;
+}
+
+void Rectangle::setEnd(const std::shared_ptr<Point> &end) {
+    Rectangle::end = end;
+}
+
+const std::shared_ptr<Point> &Circle::getOrigin() const {
+    return origin;
+}
+
+void Circle::setOrigin(const std::shared_ptr<Point> &origin) {
+    Circle::origin = origin;
+}
+
+double Circle::getRadius() const {
+    return radius;
+}
+
+void Circle::setRadius(double radius) {
+    Circle::radius = radius;
+}
+
+bool RectangleCircleIntersection::intersects(Rectangle rect, Circle circ) {
     return false;
 }
 
-bool Rect::encases(const Shape &other) {
-    return false;
-}
-
-bool Circ::intersects(const Shape &other) {
-    return false;
-}
-
-bool Circ::encases(const Shape &other) {
+bool RectangleCircleEncasement::encases(Rectangle rect, Circle circ) {
     return false;
 }
