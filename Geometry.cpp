@@ -1,3 +1,5 @@
+#include <stdexcept>
+#include <cmath>
 #include "Geometry.h"
 
 const std::vector<double> &Point::getCoordinates() const {
@@ -9,7 +11,21 @@ void Point::setCoordinates(const std::vector<double> &coordinates) {
 }
 
 double EuklidianPointDistance::getDistance(const Point &point1, const Point &point2) {
-    return 0;
+    int p1_dimension = point1.getCoordinates().size();
+    int p2_dimension = point2.getCoordinates().size();
+
+    if (p1_dimension != p2_dimension) {
+        throw std::invalid_argument("Points need to have the same dimension (number of coordinates)"
+                                    "to be able to measure distances!");
+    }
+
+    double squared_sum = 0;
+
+    for (int i = 0; i < p1_dimension; i++) {
+        squared_sum += std::pow(point1.getCoordinates()[i] - point2.getCoordinates()[i], 2);
+    }
+
+    return std::sqrt(squared_sum);
 }
 
 bool Rect::intersects(const Shape &other) {
