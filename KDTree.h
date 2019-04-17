@@ -71,30 +71,30 @@ private:
 
     };
 
-    class pointHeap {
+    class PointHeap {
     private:
-        class pointHeapEntry {
+        class PointHeapEntry {
         public:
             std::shared_ptr<Point> point;
             double dist;
 
-            pointHeapEntry(std::shared_ptr<Point> p, double d) : point(std::move(p)), dist(d) {};
+            PointHeapEntry(std::shared_ptr<Point> p, double d) : point(std::move(p)), dist(d) {};
 
-            ~pointHeapEntry() = default;
+            ~PointHeapEntry() = default;
         };
 
         // Lambda expression for comparing in priority queue
         struct compare {
-            bool operator()(const pointHeapEntry &p1, const pointHeapEntry &p2) {
+            bool operator()(const PointHeapEntry &p1, const PointHeapEntry &p2) {
                 return p1.dist < p2.dist;
             }
         };
 
-        std::priority_queue<pointHeapEntry, std::vector<pointHeapEntry>, compare> heap;
+        std::priority_queue<PointHeapEntry, std::vector<PointHeapEntry>, compare> heap;
         int amount;
 
     public:
-        explicit pointHeap(int a) : amount(a) {};
+        explicit PointHeap(int a) : amount(a) {};
 
         bool add(std::shared_ptr<Point> p, double dist);
 
@@ -105,7 +105,7 @@ private:
 
     void getRec(std::shared_ptr<Node> current, std::list<std::shared_ptr<Point>> &point_list);
 
-    void searchRec(std::shared_ptr<KDTree::Node> current, pointHeap &foundHeap,
+    void searchRec(std::shared_ptr<KDTree::Node> current, PointHeap &foundHeap,
                    std::shared_ptr<Point> target, int amount);
 
     std::shared_ptr<Node> root;

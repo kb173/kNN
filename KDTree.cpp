@@ -65,7 +65,7 @@ void KDTree::insert(std::shared_ptr<Point> point) {
 }
 
 std::list<std::shared_ptr<Point>> KDTree::search(std::shared_ptr<Point> target, int amount) {
-    pointHeap results = pointHeap(amount);
+    PointHeap results = PointHeap(amount);
 
     searchRec(root, results, target, amount);
 
@@ -91,7 +91,7 @@ void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared
     getRec(current->getRight(), point_list);
 }
 
-void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, pointHeap &foundHeap,
+void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, PointHeap &foundHeap,
                        std::shared_ptr<Point> target, int amount) {
     if (current == nullptr) {
         return;
@@ -106,19 +106,19 @@ void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, pointHeap &foundHe
     searchRec(current->getRight(), foundHeap, target, amount);
 }
 
-bool KDTree::pointHeap::add(std::shared_ptr<Point> p, double dist) {
+bool KDTree::PointHeap::add(std::shared_ptr<Point> p, double dist) {
     if (dist < getWorstDist()) {
         if (heap.size() == amount) {
             heap.pop();
         }
-        heap.push(pointHeapEntry(std::move(p), dist));
+        heap.push(PointHeapEntry(std::move(p), dist));
         return true;
     }
 
     return false; // Heap is full and dist of new point is greater than dist of furthest point in heap
 }
 
-double KDTree::pointHeap::getWorstDist() {
+double KDTree::PointHeap::getWorstDist() {
     // Return infinity if heap is not full, worst distance if full
     if (heap.size() < amount)
         return std::numeric_limits<double>::max();
@@ -126,11 +126,10 @@ double KDTree::pointHeap::getWorstDist() {
     return heap.top().dist;
 }
 
-std::list<std::shared_ptr<Point>> KDTree::pointHeap::getPoints() {
+std::list<std::shared_ptr<Point>> KDTree::PointHeap::getPoints() {
     std::list points = std::list<std::shared_ptr<Point>>();
 
-    while (!heap.empty())
-    {
+    while (!heap.empty()) {
         points.push_back(heap.top().point);
         heap.pop();
     }

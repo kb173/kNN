@@ -32,11 +32,12 @@ SCENARIO("Items can be inserted", "[insert]") {
         }
 
         WHEN("A classified point (derived from point) is added") {
-            std::shared_ptr newClassified = std::make_shared<ClassifiedPoint>(ClassifiedPoint(std::vector<double>({1, 1}), 5));
+            std::shared_ptr newClassified = std::make_shared<ClassifiedPoint>(
+                    ClassifiedPoint(std::vector<double>({1, 1}), 5));
             kdtree->insert(newClassified);
             std::list<std::shared_ptr<Point>> points = kdtree->getAllPoints();
 
-            THEN("This point can be retrieved") {
+            THEN("This point can be retrieved as a ClassifiedPoint") {
 
                 std::shared_ptr<ClassifiedPoint> classified = std::dynamic_pointer_cast<ClassifiedPoint>(points.back());
 
