@@ -4,6 +4,8 @@
 
 #include <utility>
 
+#include <utility>
+
 #ifndef KNN_KDTREE_H
 #define KNN_KDTREE_H
 
@@ -73,10 +75,10 @@ private:
     private:
         class pointHeapEntry {
         public:
-            Point point;
+            std::shared_ptr<Point> point;
             double dist;
 
-            pointHeapEntry(Point &p, double d) : point(p), dist(d) {};
+            pointHeapEntry(std::shared_ptr<Point> p, double d) : point(std::move(p)), dist(d) {};
 
             ~pointHeapEntry() = default;
         };
@@ -88,23 +90,22 @@ private:
             }
         };
 
-
         std::priority_queue<pointHeapEntry, std::vector<pointHeapEntry>, compare> heap;
         int amount;
 
     public:
         explicit pointHeap(int a) : amount(a) {};
 
-        bool add(double *p, double dist);
+        bool add(std::shared_ptr<Point> p, double dist);
 
         double getWorstDist();
 
-        std::list<Point> getPoints();
+        std::list<std::shared_ptr<Point>> getPoints();
     };
 
     void getRec(std::shared_ptr<Node> current, std::list<std::shared_ptr<Point>> &point_list);
 
-    void searchRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &foundList,
+    void searchRec(std::shared_ptr<KDTree::Node> current, pointHeap &foundHeap,
                    std::shared_ptr<Point> target, int amount);
 
     std::shared_ptr<Node> root;

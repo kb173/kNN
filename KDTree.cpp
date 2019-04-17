@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 #include "KDTree.h"
 
 std::shared_ptr<Point> KDTree::Node::getPoint() const {
@@ -63,11 +65,11 @@ void KDTree::insert(std::shared_ptr<Point> point) {
 }
 
 std::list<std::shared_ptr<Point>> KDTree::search(std::shared_ptr<Point> target, int amount) {
-    auto results = std::list<std::shared_ptr<Point>>();
+    pointHeap results = pointHeap(amount);
 
     searchRec(root, results, target, amount);
 
-    return results;
+    return results.getPoints();
 }
 
 std::list<std::shared_ptr<Point>> KDTree::getAllPoints() {
@@ -89,12 +91,49 @@ void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared
     getRec(current->getRight(), point_list);
 }
 
-void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &foundList,
+void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, pointHeap &foundHeap,
                        std::shared_ptr<Point> target, int amount) {
     if (current == nullptr) {
         return;
     }
 
-    searchRec(current->getLeft(), foundList, target, amount);
-    searchRec(current->getRight(), foundList, target, amount);
+    auto distanceMeasurer = EuklidianPointDistance();
+    double distance = distanceMeasurer.getDistance(current->getPoint(), target);
+
+    foundHeap.add(current->getPoint(), distance);
+
+    searchRec(current->getLeft(), foundHeap, target, amount);
+    searchRec(current->getRight(), foundHeap, target, amount);
+}
+
+bool KDTree::pointHeap::add(std::shared_ptr<Point> p, double dist) {
+    if (dist < getWorstDist()) {
+        if (heap.size() == amount) {
+            heap.pop();
+        }
+        heap.push(pointHeapEntry(std::move(p), dist));
+        return true;
+    }
+
+    return false; // Heap is full and dist of new point is greater than dist of furthest point in heap
+}
+
+double KDTree::pointHeap::getWorstDist() {
+    // Return infinity if heap is not full, worst distance if full
+    if (heap.size() < amount)
+        return std::numeric_limits<double>::max();
+
+    return heap.top().dist;
+}
+
+std::list<std::shared_ptr<Point>> KDTree::pointHeap::getPoints() {
+    std::list points = std::list<std::shared_ptr<Point>>();
+
+    while (!heap.empty())
+    {
+        points.push_back(heap.top().point);
+        heap.pop();
+    }
+
+    return points;
 }
