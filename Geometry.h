@@ -1,3 +1,5 @@
+#include <utility>
+
 #ifndef KNN_GEOMETRY_H
 #define KNN_GEOMETRY_H
 
@@ -62,6 +64,8 @@ private:
 class Circle {
 
 public:
+    Circle(std::shared_ptr<Point> orig, double rad) : origin(std::move(orig)), radius(rad) {};
+
     const std::shared_ptr<Point> &getOrigin() const;
 
     void setOrigin(const std::shared_ptr<Point> &origin);
