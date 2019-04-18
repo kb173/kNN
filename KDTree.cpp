@@ -12,6 +12,10 @@ int KDTree::Node::getSplittingDim() const {
     return splitting_dim;
 }
 
+void KDTree::Node::setSplittingDim(int newDim) {
+    splitting_dim = newDim;
+}
+
 const std::shared_ptr<KDTree::Node> &KDTree::Node::getLeft() const {
     return left;
 }
@@ -29,6 +33,8 @@ void KDTree::Node::setRight(std::shared_ptr<KDTree::Node> right) {
 }
 
 void KDTree::insert(std::shared_ptr<Point> point) {
+    adaptBounds(point);
+
     std::shared_ptr<Node> new_node = std::make_shared<Node>(Node(point, 0)); // TODO: Fix splitting dim
 
     if (root == nullptr) {
@@ -60,7 +66,6 @@ void KDTree::insert(std::shared_ptr<Point> point) {
 
         current_dimension++;
         current_dimension = current_dimension % current->getPoint()->getCoordinates().size();
-
     }
 }
 
@@ -80,7 +85,7 @@ std::list<std::shared_ptr<Point>> KDTree::getAllPoints() {
     return points;
 }
 
-void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared_ptr<Point>> &point_list) {
+void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std::shared_ptr<Point>> &point_list) {
     if (current == nullptr) {
         return;
     }
@@ -91,8 +96,8 @@ void KDTree::getRec(std::shared_ptr<KDTree::Node> current, std::list<std::shared
     getRec(current->getRight(), point_list);
 }
 
-void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, PointHeap &foundHeap,
-                       std::shared_ptr<Point> target, int amount) {
+void KDTree::searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &foundHeap,
+                       const std::shared_ptr<Point>& target, int amount) {
     if (current == nullptr) {
         return;
     }
@@ -104,6 +109,29 @@ void KDTree::searchRec(std::shared_ptr<KDTree::Node> current, PointHeap &foundHe
 
     searchRec(current->getLeft(), foundHeap, target, amount);
     searchRec(current->getRight(), foundHeap, target, amount);
+}
+
+void KDTree::adaptBounds(const std::shared_ptr<Point> &adaptTo) {
+    int dimension = adaptTo->getCoordinates().size();
+
+    if (boundingRect == nullptr) {
+        // If the bounding rectangle hasn't been initialized, copy the adaptTo point into its start and end variables
+        boundingRect = std::make_unique<Rectangle>(Rectangle());
+
+        boundingRect->setStart(std::make_shared<Point>(*adaptTo));
+        boundingRect->setEnd(std::make_shared<Point>(*adaptTo));
+    } else {
+        // Expand the bounding rectangle wherever needed
+        for (int i = 0; i < dimension; i++) {
+            double valueAtCoordinate = adaptTo->getCoordinates()[i];
+
+            if (valueAtCoordinate < boundingRect->getStart()->getCoordinates()[i]) {
+                boundingRect->getStart()->setCoordinate(i, valueAtCoordinate);
+            } else if (valueAtCoordinate > boundingRect->getEnd()->getCoordinates()[i]) {
+                boundingRect->getEnd()->setCoordinate(i, valueAtCoordinate);
+            }
+        }
+    }
 }
 
 bool KDTree::PointHeap::add(std::shared_ptr<Point> p, double dist) {

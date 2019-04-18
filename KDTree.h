@@ -32,15 +32,15 @@ public:
 class KDTree : public IKDTree {
 
 public:
-    KDTree() : bounding_rect(Rectangle()) {}
+    KDTree() = default;
 
     virtual ~KDTree() = default;
 
     void insert(std::shared_ptr<Point> point) override;
 
-    std::list<std::shared_ptr<Point>> search(std::shared_ptr<Point> target, int amount);
+    std::list<std::shared_ptr<Point>> search(std::shared_ptr<Point> target, int amount) override;
 
-    std::list<std::shared_ptr<Point>> getAllPoints();
+    std::list<std::shared_ptr<Point>> getAllPoints() override;
 
 private:
     class Node {
@@ -54,6 +54,8 @@ private:
         std::shared_ptr<Point> getPoint() const;
 
         int getSplittingDim() const;
+
+        void setSplittingDim(int newDim);
 
         const std::shared_ptr<Node> &getLeft() const;
 
@@ -103,14 +105,16 @@ private:
         std::list<std::shared_ptr<Point>> getPoints();
     };
 
-    void getRec(std::shared_ptr<Node> current, std::list<std::shared_ptr<Point>> &point_list);
+    void getRec(const std::shared_ptr<Node>& current, std::list<std::shared_ptr<Point>> &point_list);
 
-    void searchRec(std::shared_ptr<KDTree::Node> current, PointHeap &foundHeap,
-                   std::shared_ptr<Point> target, int amount);
+    void searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &foundHeap,
+                   const std::shared_ptr<Point>& target, int amount);
+
+    void adaptBounds(const std::shared_ptr<Point>& adaptTo);
 
     std::shared_ptr<Node> root;
 
-    Rectangle bounding_rect;
+    std::unique_ptr<Rectangle> boundingRect;
 
 };
 

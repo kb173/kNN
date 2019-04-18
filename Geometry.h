@@ -16,6 +16,8 @@ public:
 
     void setCoordinates(const std::vector<double> &coordinates);
 
+    void setCoordinate(int dimension, double value);
+
 protected:
     std::vector<double> coordinates;
 
@@ -40,6 +42,8 @@ public:
 class Rectangle {
 
 public:
+    Rectangle();
+
     const std::shared_ptr<Point> &getStart() const;
 
     void setStart(const std::shared_ptr<Point> &start);
@@ -76,14 +80,14 @@ private:
 class RectangleCircleIntersection {
 
 public:
-    bool intersects(Rectangle rect, Circle circ);
+    bool intersects(const Rectangle& rect, const Circle& circ);
 
 };
 
 class RectangleCircleEncasement {
 
 public:
-    bool encases(Rectangle rect, Circle circ);
+    bool encases(const Rectangle& rect, const Circle& circ);
 
 };
 
