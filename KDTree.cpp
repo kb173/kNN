@@ -35,7 +35,7 @@ void KDTree::Node::setRight(std::shared_ptr<KDTree::Node> right) {
 void KDTree::insert(std::shared_ptr<Point> point) {
     adaptBounds(point);
 
-    std::shared_ptr<Node> new_node = std::make_shared<Node>(Node(point, 0)); // TODO: Fix splitting dim
+    std::shared_ptr<Node> new_node = std::make_shared<Node>(Node(point, 0));
 
     if (root == nullptr) {
         root = new_node;
@@ -46,6 +46,10 @@ void KDTree::insert(std::shared_ptr<Point> point) {
     int current_dimension = 0;
 
     while (true) {
+        current_dimension++;
+        current_dimension = current_dimension % current->getPoint()->getCoordinates().size();
+        new_node->setSplittingDim(current_dimension);
+
         // Go right or left depending on the current dimension, then recurse of insert
         if (new_node->getPoint()->getCoordinates()[current_dimension] <
             current->getPoint()->getCoordinates()[current_dimension]) {
@@ -63,9 +67,6 @@ void KDTree::insert(std::shared_ptr<Point> point) {
                 current = current->getRight();
             }
         }
-
-        current_dimension++;
-        current_dimension = current_dimension % current->getPoint()->getCoordinates().size();
     }
 }
 
