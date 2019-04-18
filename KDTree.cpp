@@ -72,7 +72,7 @@ void KDTree::insert(std::shared_ptr<Point> point) {
 std::list<std::shared_ptr<Point>> KDTree::search(std::shared_ptr<Point> target, int amount) {
     PointHeap results = PointHeap(amount);
 
-    searchRec(root, results, target, amount);
+    searchRec(root, results, target, amount, *boundingRect);
 
     return results.getPoints();
 }
@@ -97,7 +97,7 @@ void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std:
 }
 
 void KDTree::searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &foundHeap,
-                       const std::shared_ptr<Point>& target, int amount) {
+                       const std::shared_ptr<Point>& target, int amount, Rectangle currentBounds) {
     if (current == nullptr) {
         return;
     }
@@ -107,8 +107,39 @@ void KDTree::searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &
 
     foundHeap.add(current->getPoint(), distance);
 
-    searchRec(current->getLeft(), foundHeap, target, amount);
-    searchRec(current->getRight(), foundHeap, target, amount);
+    // Update the bounding rectangle and target circle
+    Circle checkingCircle = Circle(target, foundHeap.getWorstDist());
+
+    int splittingDim = current->getSplittingDim();
+
+    Rectangle leftBounds = currentBounds;
+    Rectangle rightBounds = currentBounds;
+    double valueAtSplittingDim = current->getPoint()->getCoordinates()[splittingDim];
+
+    std::shared_ptr<Point> newLeftBoundEnd = std::make_shared<Point>(*leftBounds.getEnd());
+    newLeftBoundEnd->setCoordinate(splittingDim, valueAtSplittingDim);
+
+    std::shared_ptr<Point> newRightBoundStart = std::make_shared<Point>(*rightBounds.getStart());
+    newRightBoundStart->setCoordinate(splittingDim, valueAtSplittingDim);
+
+    leftBounds.setEnd(newLeftBoundEnd);
+    rightBounds.setStart(newRightBoundStart);
+
+    // If the target is on the left, continue left first
+    if (target->getCoordinates()[splittingDim] < valueAtSplittingDim) {
+        searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
+
+        // If it makes sense to continue searching right too, do that
+        if (RectangleCircleIntersection().intersects(rightBounds, checkingCircle)) {
+            searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
+        }
+    } else {
+        searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
+
+        if (RectangleCircleIntersection().intersects(leftBounds, checkingCircle)) {
+            searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
+        }
+    }
 }
 
 void KDTree::adaptBounds(const std::shared_ptr<Point> &adaptTo) {
