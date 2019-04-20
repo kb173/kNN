@@ -97,10 +97,10 @@ void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std:
     getRec(current->getRight(), point_list);
 }
 
-void KDTree::searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &foundHeap,
-                       const std::shared_ptr<Point>& target, int amount, Rectangle currentBounds) {
+bool KDTree::searchRec(const std::shared_ptr<KDTree::Node> &current, PointHeap &foundHeap,
+                       const std::shared_ptr<Point> &target, int amount, Rectangle currentBounds) {
     if (current == nullptr) {
-        return;
+        return false;
     }
 
     auto distanceMeasurer = EuklidianPointDistance();
@@ -128,19 +128,24 @@ void KDTree::searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &
 
     // If the target is on the left, continue left first
     if (target->getCoordinates()[splittingDim] < valueAtSplittingDim) {
-        searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
+        bool done = searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
 
         // If it makes sense to continue searching right too, do that
-        if (RectangleCircleIntersection().intersects(rightBounds, checkingCircle)) {
+        if (!done && RectangleCircleIntersection().intersects(rightBounds, checkingCircle)) {
             searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
         }
     } else {
-        searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
+        bool done = searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
 
-        if (RectangleCircleIntersection().intersects(leftBounds, checkingCircle)) {
+        if (!done && RectangleCircleIntersection().intersects(leftBounds, checkingCircle)) {
             searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
         }
     }
+
+    // Update checking circle
+    checkingCircle = Circle(target, foundHeap.getWorstDist());
+
+    return RectangleCircleEncasement().encases(currentBounds, checkingCircle);
 }
 
 void KDTree::adaptBounds(const std::shared_ptr<Point> &adaptTo) {

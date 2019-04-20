@@ -71,23 +71,19 @@ void Circle::setRadius(double radius) {
     Circle::radius = radius;
 }
 
-bool RectangleCircleIntersection::intersects(const Rectangle& rect, const Circle& circ) {
+bool RectangleCircleIntersection::intersects(const Rectangle &rect, const Circle &circ) {
     int dimension = rect.getStart()->getCoordinates().size();
 
     // Get closest point within rectangle to circle
     std::vector<double> clampedCoordinates = std::vector<double>(dimension);
 
-    for (int i = 0; i < dimension; i++)
-    {
+    for (int i = 0; i < dimension; i++) {
         // Make clamped be between the rectangle start and end
-        if (circ.getOrigin()->getCoordinates()[i] < rect.getStart()->getCoordinates()[i])
-        {
+        if (circ.getOrigin()->getCoordinates()[i] < rect.getStart()->getCoordinates()[i]) {
             clampedCoordinates[i] = rect.getStart()->getCoordinates()[i];
-        } else if (circ.getOrigin()->getCoordinates()[i] > rect.getEnd()->getCoordinates()[i])
-        {
+        } else if (circ.getOrigin()->getCoordinates()[i] > rect.getEnd()->getCoordinates()[i]) {
             clampedCoordinates[i] = rect.getEnd()->getCoordinates()[i];
-        } else
-        {
+        } else {
             clampedCoordinates[i] = circ.getOrigin()->getCoordinates()[i];
         }
     }
@@ -101,6 +97,21 @@ bool RectangleCircleIntersection::intersects(const Rectangle& rect, const Circle
     return distance < circ.getRadius();
 }
 
-bool RectangleCircleEncasement::encases(const Rectangle& rect, const Circle& circ) {
-    return false;
+bool RectangleCircleEncasement::encases(const Rectangle &rect, const Circle &circ) {
+    int dimension = rect.getStart()->getCoordinates().size();
+
+    // Check if closest point within circle to rectangle is within the rectangle
+    for (int i = 0; i < dimension; i++) {
+        // ex: |c->origin   |+radius      |r->origin
+        if (rect.getStart()->getCoordinates()[i] >= circ.getOrigin()->getCoordinates()[i] + circ.getRadius()) {
+            return false;
+        }
+
+        // ex: |r->end     |-radius     |c->origin
+        if (rect.getEnd()->getCoordinates()[i] <= circ.getOrigin()->getCoordinates()[i] - circ.getRadius()) {
+            return false;
+        }
+    }
+
+    return true;
 }

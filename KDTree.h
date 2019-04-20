@@ -107,8 +107,8 @@ private:
 
     void getRec(const std::shared_ptr<Node>& current, std::list<std::shared_ptr<Point>> &point_list);
 
-    void searchRec(const std::shared_ptr<KDTree::Node>& current, PointHeap &foundHeap,
-                   const std::shared_ptr<Point>& target, int amount, Rectangle currentBounds);
+    bool searchRec(const std::shared_ptr<KDTree::Node> &current, PointHeap &foundHeap,
+                   const std::shared_ptr<Point> &target, int amount, Rectangle currentBounds);
 
     void adaptBounds(const std::shared_ptr<Point>& adaptTo);
 
