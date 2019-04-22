@@ -43,30 +43,32 @@ void KDTree::insert(std::shared_ptr<Point> point) {
     }
 
     std::shared_ptr<Node> current = root;
+
+    int dimension = point->getCoordinates().size();
     int current_dimension = 0;
 
     while (true) {
-        current_dimension++;
-        current_dimension = current_dimension % current->getPoint()->getCoordinates().size();
-        new_node->setSplittingDim(current_dimension);
-
         // Go right or left depending on the current dimension, then recurse of insert
         if (new_node->getPoint()->getCoordinates()[current_dimension] <
             current->getPoint()->getCoordinates()[current_dimension]) {
             if (current->getLeft() == nullptr) {
                 current->setLeft(new_node);
-                return;
+                new_node->setSplittingDim((current_dimension + 1) % dimension);
+                break;
             } else {
                 current = current->getLeft();
             }
         } else {
             if (current->getRight() == nullptr) {
                 current->setRight(new_node);
-                return;
+                new_node->setSplittingDim((current_dimension + 1) % dimension);
+                break;
             } else {
                 current = current->getRight();
             }
         }
+
+        current_dimension = (current_dimension + 1) % dimension;
     }
 }
 
@@ -98,11 +100,7 @@ void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std:
 }
 
 bool KDTree::searchRec(const std::shared_ptr<KDTree::Node> &current, PointHeap &foundHeap,
-                       const std::shared_ptr<Point> &target, int amount, Rectangle currentBounds) {
-    if (current == nullptr) {
-        return false;
-    }
-
+                       const std::shared_ptr<Point> &target, int amount, const Rectangle& currentBounds) {
     auto distanceMeasurer = EuklidianPointDistance();
     double distance = distanceMeasurer.getDistance(current->getPoint(), target);
 
@@ -127,17 +125,17 @@ bool KDTree::searchRec(const std::shared_ptr<KDTree::Node> &current, PointHeap &
     rightBounds.setStart(newRightBoundStart);
 
     // If the target is on the left, continue left first
-    if (target->getCoordinates()[splittingDim] < valueAtSplittingDim) {
+    if (target->getCoordinates()[splittingDim] < valueAtSplittingDim && current->getLeft()) {
         bool done = searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
 
         // If it makes sense to continue searching right too, do that
-        if (!done && RectangleCircleIntersection().intersects(rightBounds, checkingCircle)) {
+        if (current->getRight() && !done && RectangleCircleIntersection().intersects(rightBounds, checkingCircle)) {
             searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
         }
-    } else {
+    } else if (current->getRight()) {
         bool done = searchRec(current->getRight(), foundHeap, target, amount, rightBounds);
 
-        if (!done && RectangleCircleIntersection().intersects(leftBounds, checkingCircle)) {
+        if (current->getLeft() && !done && RectangleCircleIntersection().intersects(leftBounds, checkingCircle)) {
             searchRec(current->getLeft(), foundHeap, target, amount, leftBounds);
         }
     }
