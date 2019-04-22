@@ -176,3 +176,21 @@ SCENARIO("Sorted insert", "[insert, sort]") {
         }
     }
 }
+
+SCENARIO("Statistical functions", "[statistics]") {
+    GIVEN("A simple 2-dim vector") {
+        auto data = std::vector<std::vector<double>>{{1,1,1},{2,3,4},{2,5,10}};
+
+        WHEN("Calculating the mean of a row") {
+            THEN("the result is the expected value") {
+                REQUIRE(ZScore().getMeanOfCol(data, 1) == 3);
+            }
+        }
+
+        WHEN("Calculating the std deviation of a row") {
+            THEN("the result is the expected value") {
+                REQUIRE(ZScore().getStdDeviationOfCol(data, 1) == 2);
+            }
+        }
+    }
+}
