@@ -186,8 +186,8 @@ SCENARIO("Sorted insert", "[insert, sort]") {
 
             std::list<std::shared_ptr<Point>> points = kdtree->getAllPoints();
 
-            THEN("The root (last point in the list) is the median") {
-                REQUIRE(points.back()->getCoordinates() == newPoint1->getCoordinates());
+            THEN("The root (first point in the list) is the median (along the first dimension)") {
+                REQUIRE(points.front()->getCoordinates() == newPoint3->getCoordinates());
             }
 
         }
