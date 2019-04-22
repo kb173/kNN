@@ -193,6 +193,20 @@ SCENARIO("Statistical functions", "[statistics]") {
             }
         }
 
+        WHEN("Converting it to ClassifiedPoints") {
+            std::list<std::shared_ptr<Point>> points = ZScore().twoDimVectorToPoints(data);
+
+            THEN("the points have the correct coordinates") {
+                REQUIRE(points.front()->getCoordinates() == std::vector<double>{1, 1});
+            }
+
+            THEN("the classification can be acquired") {
+                std::shared_ptr<ClassifiedPoint> classified = std::dynamic_pointer_cast<ClassifiedPoint>(points.front());
+
+                REQUIRE(classified->getClassification() == 1);
+            }
+        }
+
         WHEN("Standardizing the data") {
             ZScore().standardize(data);
             double tolerance = 0.0001;

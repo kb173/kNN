@@ -42,6 +42,26 @@ double ZScore::getStdDeviationOfCol(const std::vector<std::vector<double>> &data
     return std::sqrt(variance / (rows - 1));
 }
 
-std::list<std::shared_ptr<Point>> ZScore::twoDimVectorToPoints(const std::vector<std::vector<double>> &) {
-    return std::list<std::shared_ptr<Point>>();
+std::list<std::shared_ptr<Point>> ZScore::twoDimVectorToPoints(const std::vector<std::vector<double>> &data) {
+    auto points = std::list<std::shared_ptr<Point>>();
+
+    int rows = data.size();
+    int cols = data.front().size();
+
+    // 1 is subtracted from cols because the last column are the classes (which are supposed to stay integers)
+    int colMax = cols - 1;
+
+    for (int row = 0; row < rows; row++) {
+        std::vector<double> coordinates = std::vector<double>();
+
+        for (int col = 0; col < colMax; col++) {
+            coordinates.push_back(data[row][col]);
+        }
+
+        int classification = (int)data[row].back();
+
+        points.push_back(std::make_shared<ClassifiedPoint>(ClassifiedPoint(coordinates, classification)));
+    }
+
+    return points;
 }
