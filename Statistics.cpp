@@ -1,8 +1,21 @@
 #include <cmath>
 #include "Statistics.h"
 
-void ZScore::standardize(std::vector<std::vector<double>> &) {
+void ZScore::standardize(std::vector<std::vector<double>> &data) {
+    int rows = data.size();
+    int cols = data.front().size();
 
+    // 1 is subtracted from cols because the last column are the classes (which are supposed to stay integers)
+    int colMax = cols - 1;
+
+    for (int col = 0; col < colMax; col++) {
+        double mean = getMeanOfCol(data, col);
+        double stdDev = getStdDeviationOfCol(data, col);
+
+        for (int row = 0; row < rows; row++) {
+            data[row][col] = (data[row][col] - mean) / stdDev;
+        }
+    }
 }
 
 double ZScore::getMeanOfCol(const std::vector<std::vector<double>> &data, int col) {

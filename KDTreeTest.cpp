@@ -192,5 +192,22 @@ SCENARIO("Statistical functions", "[statistics]") {
                 REQUIRE(ZScore().getStdDeviationOfCol(data, 1) == 2);
             }
         }
+
+        WHEN("Standardizing the data") {
+            ZScore().standardize(data);
+            double tolerance = 0.0001;
+
+            THEN("the values are standardized correctly") {
+                REQUIRE(std::abs(data.front().front() - -2 / std::sqrt(3)) < tolerance);
+                REQUIRE(std::abs(data.back().front() - 1 / std::sqrt(3)) < tolerance);
+                REQUIRE(data[0][1] == -1);
+                REQUIRE(data[1][1] == 0);
+                REQUIRE(data[2][1] == 1);
+            }
+
+            THEN("the classification column remains intact") {
+                REQUIRE(data.front().back() == 1);
+            }
+        }
     }
 }
