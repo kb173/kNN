@@ -5,6 +5,23 @@
 #include "Statistics.h"
 #include "KDTreePreparation.h"
 
+SCENARIO("Geometry") {
+
+    GIVEN("Two points") {
+        std::shared_ptr p1 = std::make_shared<Point>(Point(std::vector<double>({1, 1})));
+        std::shared_ptr p2 = std::make_shared<Point>(Point(std::vector<double>({3, 3})));
+
+        WHEN("The euklidian distance is measured") {
+            auto distanceMeasurer = EuklidianPointDistance();
+            double distance = distanceMeasurer.getDistance(p1, p2);
+
+            THEN("The result is correct") {
+                REQUIRE(distance == 2 * std::sqrt(2));
+            }
+        }
+    }
+}
+
 SCENARIO("Items can be inserted", "[insert]") {
 
     GIVEN("An empty KDTree") {
