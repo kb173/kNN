@@ -1,4 +1,6 @@
 #include <cmath>
+#include <climits>
+#include <iostream>
 #include "Statistics.h"
 
 void ZScore::standardize(std::vector<std::vector<double>> &data) {
@@ -64,4 +66,73 @@ std::list<std::shared_ptr<Point>> ZScore::twoDimVectorToPoints(const std::vector
     }
 
     return points;
+}
+
+std::map<int, std::map<int, int>> ConfusionMatrix::getConfusionMatrix(std::list<std::vector<int>> guessExpectList) {
+    std::map<int, std::map<int, int>> confusionMatrix = std::map<int, std::map<int, int>>();
+
+    for(const auto& guessedExpected : guessExpectList) {
+        int guessed = guessedExpected.front();
+        int expected = guessedExpected.back();
+
+
+        confusionMatrix[guessed][expected]++;
+    }
+
+    return confusionMatrix;
+}
+
+void ConfusionMatrix::printConfusionMatrix(std::map<int, std::map<int, int>> confusionMatrix) {
+
+    int min = INT_MAX;
+    int max = 0;
+
+    for(auto const &row : confusionMatrix) {
+        for(auto const &col : row.second) {
+            if (row.first < min) {
+                min = row.first;
+            }
+
+            if (row.first > max) {
+                max = row.first;
+            }
+
+            if (col.first < min) {
+                min = col.first;
+            }
+
+            if (col.first > max) {
+                max = col.first;
+            }
+        }
+    }
+
+
+    for (int row = min; row <= max; row++) {
+        for (int col = min; col <= max; col++) {
+            std::cout << confusionMatrix[row][col] << "\t";
+        }
+
+        std::cout << std::endl;
+    }
+
+
+}
+
+
+float Statistics::getAccuracy(std::map<int, std::map<int, int>> confusionMatrix) {
+    int goodGuesses = 0;
+    int totalGuesses = 0;
+
+    for(auto const &row : confusionMatrix) {
+        for(auto const &col : row.second) {
+            totalGuesses += col.second;
+
+            if(row.first == col.first) {
+                goodGuesses += col.second;
+            }
+        }
+    }
+
+    return ((float)goodGuesses / (float)totalGuesses);
 }

@@ -6,6 +6,7 @@
 #include "KDTreePreparation.h"
 #include "CrossValidation.h"
 #include <map>
+#include <climits>
 
 int main() {
     CSVReader reader;
@@ -26,38 +27,16 @@ int main() {
 
     std::cout << "Validating took " << elapsedTime << std::endl;
 
+
+    std::cout << std::endl << std::endl;
     auto confusionMatrix = std::map<int, std::map<int, int>>();
+    auto confusionMatrix2 = std::map<int, std::map<int, int>>();
 
-    // TODO: Proper classes
-    // TODO: general confusion matrix
-    /*int guessedmin = std::numeric_limits<int>();
-    int guessedmax = 0;*/
+    confusionMatrix = ConfusionMatrix().getConfusionMatrix(guessExpectList);
+    ConfusionMatrix().printConfusionMatrix(confusionMatrix);
+    float accuracy = Statistics().getAccuracy(confusionMatrix);
+    std::cout << "Accuracy: " << accuracy << std::endl;
 
-    int goodGuesses = 0;
-    int totalGuesses = guessExpectList.size();
-
-    for(const auto& guessedExpected : guessExpectList) {
-        int guessed = guessedExpected.front();
-        int expected = guessedExpected.back();
-
-        if (guessed == expected) {
-            goodGuesses++;
-        }
-
-        // if (guessed < guessMin)
-
-        confusionMatrix[guessed][expected]++;
-    }
-
-    std::cout << "Accuracy: " << (float)goodGuesses / (float)totalGuesses << std::endl;
-
-    for (int row = 3; row < 10; row++) {
-        for (int col = 3; col < 10; col++) {
-            std::cout << confusionMatrix[row][col] << "\t";
-        }
-
-        std::cout << std::endl;
-    }
 
     return 0;
 }

@@ -58,7 +58,6 @@ int CrossValidation::getMostCommon(const std::list<int>& intList) {
     std::map<int, int> occuranceCounts = std::map<int, int>();
 
     for (int element : intList) {
-        std::cout << element << " ";
         occuranceCounts[element]++;
     }
 

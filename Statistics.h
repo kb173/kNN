@@ -3,6 +3,7 @@
 
 #include "Geometry.h"
 #include <list>
+#include <map>
 
 class ClassifiedPoint : public Point {
 
@@ -31,6 +32,19 @@ public:
 
     std::list<std::shared_ptr<Point>> twoDimVectorToPoints(const std::vector<std::vector<double>> &);
 
+};
+
+
+class ConfusionMatrix {
+public:
+    std::map<int, std::map<int, int>> getConfusionMatrix(std::list<std::vector<int>> guessExpectList);
+    void printConfusionMatrix(std::map<int, std::map<int, int>>);
+
+};
+
+class Statistics {
+public:
+    float getAccuracy(std::map<int, std::map<int, int>>);
 };
 
 #endif //KNN_STATISTICS_H
