@@ -1,7 +1,3 @@
-//
-// Created by mathias on 23.04.19.
-//
-
 #include <iostream>
 #include "CrossValidation.h"
 #include "Geometry.h"

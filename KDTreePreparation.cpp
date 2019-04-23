@@ -1,7 +1,3 @@
-//
-// Created by karl on 21.04.19.
-//
-
 #include "KDTreePreparation.h"
 #include <algorithm>
 
@@ -10,7 +6,7 @@ void KDTreePreparation::insertSorted(std::list<std::shared_ptr<Point>> list, IKD
     int currentDimension = 0;
 
     // Turn the list into a vector because it's more efficient to get the median from a vector
-    std::vector<std::shared_ptr<Point>> pointVector{ std::begin(list), std::end(list) };
+    std::vector<std::shared_ptr<Point>> pointVector{std::begin(list), std::end(list)};
 
     for (int i = 0; i < list.size(); i++) {
         // Sort the list based on the median point of the current dimension

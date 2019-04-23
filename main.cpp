@@ -13,7 +13,7 @@ double randomCoordinate() {
 }
 
 int performanceTest() {
-        CSVReader reader;
+    CSVReader reader;
     std::vector<std::vector<double>> data = reader.readAs2dArray(
             "/home/karl/Data/Technikum/SEM4/MLE/kNN/datasets/winequality-red.csv", ';');
     ZScore().standardize(data);
@@ -48,12 +48,13 @@ int performanceTest() {
 
 int main() {
     CSVReader reader;
-    std::vector<std::vector<double>> data = reader.readAs2dArray("/home/karl/Data/Technikum/SEM4/MLE/kNN/datasets/winequality-red.csv", ';');
+    std::vector<std::vector<double>> data = reader.readAs2dArray(
+            "/home/karl/Data/Technikum/SEM4/MLE/kNN/datasets/winequality-red.csv", ';');
     ZScore().standardize(data);
     KFold validator;
     std::vector<std::vector<std::vector<double>>> blocks = validator.getFoldedDataBlocks(data, 10);
 
-    int k = 30; // k points are evaluated (as in kNN)
+    int k = 100; // k points are evaluated (as in kNN)
 
     clock_t validateBegin = clock();
 

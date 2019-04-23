@@ -196,7 +196,9 @@ SCENARIO("Sorted insert", "[insert, sort]") {
 
 SCENARIO("Statistical functions", "[statistics]") {
     GIVEN("A simple 2-dim vector") {
-        auto data = std::vector<std::vector<double>>{{1,1,1},{2,3,4},{2,5,10}};
+        auto data = std::vector<std::vector<double>>{{1, 1, 1},
+                                                     {2, 3, 4},
+                                                     {2, 5, 10}};
 
         WHEN("Calculating the mean of a row") {
             THEN("the result is the expected value") {
@@ -218,7 +220,8 @@ SCENARIO("Statistical functions", "[statistics]") {
             }
 
             THEN("the classification can be acquired") {
-                std::shared_ptr<ClassifiedPoint> classified = std::dynamic_pointer_cast<ClassifiedPoint>(points.front());
+                std::shared_ptr<ClassifiedPoint> classified = std::dynamic_pointer_cast<ClassifiedPoint>(
+                        points.front());
 
                 REQUIRE(classified->getClassification() == 1);
             }

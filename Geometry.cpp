@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <cmath>
+#include <iostream>
 #include "Geometry.h"
 
 const std::vector<double> &Point::getCoordinates() const {

@@ -88,7 +88,7 @@ std::list<std::shared_ptr<Point>> KDTree::getAllPoints() {
     return points;
 }
 
-void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std::shared_ptr<Point>> &point_list) {
+void KDTree::getRec(const std::shared_ptr<KDTree::Node> &current, std::list<std::shared_ptr<Point>> &point_list) {
     if (current == nullptr) {
         return;
     }
@@ -100,7 +100,7 @@ void KDTree::getRec(const std::shared_ptr<KDTree::Node>& current, std::list<std:
 }
 
 bool KDTree::searchRec(const std::shared_ptr<KDTree::Node> &current, PointHeap &foundHeap,
-                       const std::shared_ptr<Point> &target, int amount, const Rectangle& currentBounds) {
+                       const std::shared_ptr<Point> &target, int amount, const Rectangle &currentBounds) {
     auto distanceMeasurer = EuklidianPointDistance();
     double distance = distanceMeasurer.getDistance(current->getPoint(), target);
 

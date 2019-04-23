@@ -1,7 +1,3 @@
-//
-// Created by karl on 21.04.19.
-//
-
 #ifndef KNN_KDTREEPREPARATION_H
 #define KNN_KDTREEPREPARATION_H
 

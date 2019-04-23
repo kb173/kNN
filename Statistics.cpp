@@ -60,7 +60,7 @@ std::list<std::shared_ptr<Point>> ZScore::twoDimVectorToPoints(const std::vector
             coordinates.push_back(data[row][col]);
         }
 
-        int classification = (int)data[row].back();
+        int classification = (int) data[row].back();
 
         points.push_back(std::make_shared<ClassifiedPoint>(ClassifiedPoint(coordinates, classification)));
     }
@@ -71,7 +71,7 @@ std::list<std::shared_ptr<Point>> ZScore::twoDimVectorToPoints(const std::vector
 std::map<int, std::map<int, int>> ConfusionMatrix::getConfusionMatrix(std::list<std::vector<int>> guessExpectList) {
     std::map<int, std::map<int, int>> confusionMatrix = std::map<int, std::map<int, int>>();
 
-    for(const auto& guessedExpected : guessExpectList) {
+    for (const auto &guessedExpected : guessExpectList) {
         int guessed = guessedExpected.front();
         int expected = guessedExpected.back();
 
@@ -87,8 +87,8 @@ void ConfusionMatrix::printConfusionMatrix(std::map<int, std::map<int, int>> con
     int min = INT_MAX;
     int max = 0;
 
-    for(auto const &row : confusionMatrix) {
-        for(auto const &col : row.second) {
+    for (auto const &row : confusionMatrix) {
+        for (auto const &col : row.second) {
             if (row.first < min) {
                 min = row.first;
             }
@@ -124,15 +124,15 @@ float Statistics::getAccuracy(std::map<int, std::map<int, int>> confusionMatrix)
     int goodGuesses = 0;
     int totalGuesses = 0;
 
-    for(auto const &row : confusionMatrix) {
-        for(auto const &col : row.second) {
+    for (auto const &row : confusionMatrix) {
+        for (auto const &col : row.second) {
             totalGuesses += col.second;
 
-            if(row.first == col.first) {
+            if (row.first == col.first) {
                 goodGuesses += col.second;
             }
         }
     }
 
-    return ((float)goodGuesses / (float)totalGuesses);
+    return ((float) goodGuesses / (float) totalGuesses);
 }

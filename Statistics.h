@@ -38,6 +38,7 @@ public:
 class ConfusionMatrix {
 public:
     std::map<int, std::map<int, int>> getConfusionMatrix(std::list<std::vector<int>> guessExpectList);
+
     void printConfusionMatrix(std::map<int, std::map<int, int>>);
 
 };

@@ -9,7 +9,7 @@
 class CSVReader {
 
 public:
-    std::vector<std::vector<double>> readAs2dArray(const std::string&, const char&);
+    std::vector<std::vector<double>> readAs2dArray(const std::string &, const char &);
 
 };
 

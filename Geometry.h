@@ -84,14 +84,14 @@ private:
 class RectangleCircleIntersection {
 
 public:
-    bool intersects(const Rectangle& rect, const Circle& circ);
+    bool intersects(const Rectangle &rect, const Circle &circ);
 
 };
 
 class RectangleCircleEncasement {
 
 public:
-    bool encases(const Rectangle& rect, const Circle& circ);
+    bool encases(const Rectangle &rect, const Circle &circ);
 
 };
 

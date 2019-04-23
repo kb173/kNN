@@ -1,7 +1,3 @@
-//
-// Created by mathias on 23.04.19.
-//
-
 #include "KFold.h"
 #include <cstdlib>
 #include <tgmath.h>
@@ -17,7 +13,7 @@ std::vector<std::vector<std::vector<double>>> KFold::getFoldedDataBlocks(std::ve
     // a new block to be pushed back into the list of all k blocks
     std::vector<std::vector<double>> block;
 
-    while(data.size() != 0) {
+    while (data.size() != 0) {
         // grab a random number to get a random entry of the dataset and push it to our new block then delete the entry
         int randomNum = (int) rand() % data.size();
         std::vector<double> randomEntry = data[randomNum];
@@ -26,7 +22,7 @@ std::vector<std::vector<std::vector<double>>> KFold::getFoldedDataBlocks(std::ve
 
         // if the block has the appropriate size or if there are no more entries left push it to our list of blocks
         // and clear the block for new entries
-        if(block.size() == blockSize || data.size() == 0) {
+        if (block.size() == blockSize || data.size() == 0) {
             dataBlocks.push_back(block);
             block.clear();
         }
