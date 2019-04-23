@@ -32,14 +32,14 @@ CrossValidation::getGuessedVersusExpected(std::vector<std::vector<std::vector<do
 
         KDTreePreparation().insertSorted(trainingPoints, kdtree);
 
-        for (const auto& expected : testPoints) {
+        for (const auto &expected : testPoints) {
             std::shared_ptr<ClassifiedPoint> classifiedExpected = std::dynamic_pointer_cast<ClassifiedPoint>(expected);
             std::list<std::shared_ptr<Point>> guesses = kdtree.search(expected, k);
 
             int expectedClassification = classifiedExpected->getClassification();
             std::list<int> guessClassifications = std::list<int>();
 
-            for (const auto& guess : guesses) {
+            for (const auto &guess : guesses) {
                 std::shared_ptr<ClassifiedPoint> classifiedGuess = std::dynamic_pointer_cast<ClassifiedPoint>(guess);
 
                 guessClassifications.push_back(classifiedGuess->getClassification());
@@ -54,14 +54,17 @@ CrossValidation::getGuessedVersusExpected(std::vector<std::vector<std::vector<do
     return guessExpectList;
 }
 
-int CrossValidation::getMostCommon(const std::list<int>& intList) {
+int CrossValidation::getMostCommon(const std::list<int> &intList) {
     std::map<int, int> occuranceCounts = std::map<int, int>();
 
     for (int element : intList) {
         occuranceCounts[element]++;
     }
 
-    auto maxElement = std::max_element(occuranceCounts.begin(), occuranceCounts.end());
+    auto maxElement = std::max_element(occuranceCounts.begin(), occuranceCounts.end(),
+                                       [](const std::pair<int, int> &p1, const std::pair<int, int> &p2) {
+                                           return p1.second < p2.second;
+                                       });
 
     return maxElement->first;
 }
