@@ -103,12 +103,12 @@ bool RectangleCircleEncasement::encases(const Rectangle &rect, const Circle &cir
     // Check if closest point within circle to rectangle is within the rectangle
     for (int i = 0; i < dimension; i++) {
         // ex: |c->origin   |+radius      |r->origin
-        if (rect.getStart()->getCoordinates()[i] >= circ.getOrigin()->getCoordinates()[i] + circ.getRadius()) {
+        if (rect.getStart()->getCoordinates()[i] >= circ.getOrigin()->getCoordinates()[i] - circ.getRadius()) {
             return false;
         }
 
         // ex: |r->end     |-radius     |c->origin
-        if (rect.getEnd()->getCoordinates()[i] <= circ.getOrigin()->getCoordinates()[i] - circ.getRadius()) {
+        if (rect.getEnd()->getCoordinates()[i] <= circ.getOrigin()->getCoordinates()[i] + circ.getRadius()) {
             return false;
         }
     }
